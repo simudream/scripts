@@ -38,8 +38,8 @@ args = parser.parse_args()
 
 #Check and act on the arguments
 if args.database == None or len(args.database) == 0:
-    unusable_databases = ['template0','template1']
     if args.database_list:
+        unusable_databases = ['template0','template1']
         #display a list of databases
         databases = retrieve_column_data(["psql","-l"],[0])
         for unusable_database in unusable_databases:

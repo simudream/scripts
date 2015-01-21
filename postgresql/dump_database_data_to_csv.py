@@ -2,14 +2,11 @@ import sys
 import argparse
 from subprocess import check_output
 
-#need to deal with template0 and template1 not receiving connections
 def retrieve_column_data(command, position):
     pg_database_data = check_output(command)
     #Remove the table headings, separators, result count and trailing lines
     pg_database_data = pg_database_data.split("\n")
     pg_database_data = pg_database_data[3:-3]
-    #Remove the result count
-    pg_database_data
 
     databases = []
 
@@ -31,7 +28,7 @@ args = parser.parse_args()
 
 #Check and act on the arguments
 if args.database == None or len(args.database) == 0:
-    if not args.database_list == None:
+    if args.database_list:
         #display a list of databases
         databases = retrieve_column_data(["psql","-l"],0)
         if 'template0' in databases: databases.remove('template0')
@@ -42,12 +39,14 @@ if args.database == None or len(args.database) == 0:
                 print("\t- " + table)
         sys.exit()
     else:
-        sys.exit("Enter an existing database name with -d")
+        print("No valid options given (--help to list options)")
+        sys.exit()
 else:
     #retrieve a list of databases
     databases = retrieve_column_data(["psql","-l"],0)
     if args.database in databases:
         #retrieve a list of tables in the chosen database
         tables = retrieve_column_data(["psql",args.database,"-c",'\d'],1)
-        print(tables)
+        for table in tables:
+            check_output(["psql", args.database, "-c", "COPY " + table + " TO '/tmp/" + table + ".csv' CSV HEADER;"])
     sys.exit("hello")

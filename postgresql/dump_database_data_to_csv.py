@@ -2,22 +2,32 @@ import sys
 import argparse
 from subprocess import check_output
 
-def retrieve_column_data(command, position):
-    pg_database_data = check_output(command)
-    #Remove the table headings, separators, result count and trailing lines
+#Remove the table headings, separators, result count and trailing lines
+def filter_headers_and_tail(pg_database_data):
     pg_database_data = pg_database_data.split("\n")
-    pg_database_data = pg_database_data[3:-3]
+    return pg_database_data[3:-3]
 
-    databases = []
-
-    #Remove unnecessary formatting and database information and get data from correct column
+def retrieve_columns(pg_database_data, column_list):
+    columns = []
+    #Remove unnecessary formatting and database information and get data from correct columns
     for database_data in pg_database_data:
         database_data = database_data.split("|")
-        if not database_data[position].isspace() and len(database_data[position]) > 1:
-            databases.append(database_data[position].strip())
+        column_data = []
+        for column in column_list:
+            if column < len(database_data): 
+                if not database_data[column].isspace() and len(database_data[column]) > 1:
+                    column_data.append(database_data[column].strip())
+                else:
+                    column_data = []
+                    continue
+        if len(column_data) > 0:
+            columns.append(column_data)
+    return columns
 
-    #remove query result count and return list of databases
-    return databases
+def retrieve_column_data(command, column_list):
+    data = check_output(command)
+    data = filter_headers_and_tail(data)
+    return retrieve_columns(data, column_list)
 
 #Set the argument parser and command line arguments
 parser = argparse.ArgumentParser(description="Dump a postgresql database's tables to a set of csv files")
@@ -28,25 +38,31 @@ args = parser.parse_args()
 
 #Check and act on the arguments
 if args.database == None or len(args.database) == 0:
+    unusable_databases = ['template0','template1']
     if args.database_list:
         #display a list of databases
-        databases = retrieve_column_data(["psql","-l"],0)
-        if 'template0' in databases: databases.remove('template0')
-        if 'template1' in databases: databases.remove('template1')
+        databases = retrieve_column_data(["psql","-l"],[0])
+        for unusable_database in unusable_databases:
+            for database in databases:
+                if database[0] == unusable_database:
+                    databases.remove(database)
         for database in databases:
-            print(database)
-            for table in retrieve_column_data(["psql",database,"-c",'\d'],1):
-                print("\t- " + table)
+            print(database[0])
+            for table in retrieve_column_data(["psql",database[0],"-c","\d"],[1]):
+                print("\t- " + table[0])
         sys.exit()
     else:
         print("No valid options given (--help to list options)")
         sys.exit()
 else:
     #retrieve a list of databases
-    databases = retrieve_column_data(["psql","-l"],0)
-    if args.database in databases:
-        #retrieve a list of tables in the chosen database
-        tables = retrieve_column_data(["psql",args.database,"-c",'\d'],1)
-        for table in tables:
-            check_output(["psql", args.database, "-c", "COPY " + table + " TO '/tmp/" + table + ".csv' CSV HEADER;"])
-    sys.exit("hello")
+    databases = retrieve_column_data(["psql","-l"],[0])
+    for database in databases:
+        if args.database == database[0]:
+            #retrieve a list of tables in the chosen database
+            tables = retrieve_column_data(["psql",args.database,"-c","\d"],[1,2])
+            for table in tables:
+                if table[1] == 'table':
+                    print table[0]
+                    check_output(["psql", args.database, "-c", "COPY " + table[0] + " TO '/tmp/" + table[0] + ".csv' CSV HEADER;"])
+    sys.exit("Complete")

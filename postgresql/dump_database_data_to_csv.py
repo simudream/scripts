@@ -33,6 +33,7 @@ def retrieve_column_data(command, column_list):
 parser = argparse.ArgumentParser(description="Dump a postgresql database's tables to a set of csv files")
 parser.add_argument('-d', dest='database', action='store', help='the name of the database to dump')
 parser.add_argument('-l', dest='database_list', action='store_true', help='list the available databases')
+parser.add_argument('-f', dest='folder', action='store', default='/tmp/', help='Directory to store the table data csv files')
 
 args = parser.parse_args()
 
@@ -55,6 +56,11 @@ if args.database == None or len(args.database) == 0:
         print("No valid options given (--help to list options)")
         sys.exit()
 else:
+    #Check the output folder path is absolute
+    if not args.folder.startswith("/"):
+        sys.exit("Please supply an absolute path")
+    if not args.folder.endswith("/"):
+        args.folder += "/"
     #retrieve a list of databases
     databases = retrieve_column_data(["psql","-l"],[0])
     for database in databases:
@@ -64,5 +70,5 @@ else:
             for table in tables:
                 if table[1] == 'table':
                     print table[0]
-                    check_output(["psql", args.database, "-c", "COPY " + table[0] + " TO '/tmp/" + table[0] + ".csv' CSV HEADER;"])
+                    check_output(["psql", args.database, "-c", "COPY " + table[0] + " TO '/" + args.folder + "/" + table[0] + ".csv' CSV HEADER;"])
     sys.exit("Complete")

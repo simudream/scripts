@@ -15,4 +15,4 @@ python dump_database_data_to_csv.py -l
 #Show help
 python dump_database_data_to_csv.py --help
 
-Currently the output files are placed in /tmp with the table names as the file name and .csv extension.
+Currently the output files are placed in /tmp by default with the table names as the file name and .csv extension. If you want to specify a different directory using the -f option please note that the COPY command used requires an absolute path.

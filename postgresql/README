@@ -13,6 +13,6 @@ python dump_database_data_to_csv.py -d <yourdatabasename>
 python dump_database_data_to_csv.py -l
 
 #Show help
-python .py --help
+python dump_database_data_to_csv.py --help
 
 Currently the output files are placed in /tmp with the table names as the file name and .csv extension.

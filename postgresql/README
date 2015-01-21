@@ -1,7 +1,7 @@
 To use this script you will currently need to run it with a role that has super user privileges in postgres as well as having login privileges. You can also use the postgres user:
 
 #Change the script owner
-sudo chown postgres:postgres dump_
+sudo chown postgres:postgres dump_database_data_to_csv.py
 
 #Change to the postgres user
 sudo su postgres

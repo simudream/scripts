@@ -43,10 +43,9 @@ if args.database == None or len(args.database) == 0:
         unusable_databases = ['template0','template1']
         #display a list of databases
         databases = retrieve_column_data(["psql","-l"],[0])
-        for unusable_database in unusable_databases:
-            for database in databases:
-                if database[0] == unusable_database:
-                    databases.remove(database)
+        for database in databases:
+            if database[0] in unusable_databases:
+                databases.remove(database)
         for database in databases:
             print(database[0])
             for table in retrieve_column_data(["psql",database[0],"-c","\d"],[1]):

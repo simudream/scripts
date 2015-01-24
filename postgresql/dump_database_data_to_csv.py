@@ -70,5 +70,5 @@ else:
             for table in tables:
                 if table[1] == 'table':
                     print table[0]
-                    check_output(["psql", args.database, "-c", "COPY " + table[0] + " TO '/" + args.folder + "/" + table[0] + ".csv' CSV HEADER;"])
+                    check_output(["psql", args.database, "-c", "COPY " + table[0] + " TO '" + args.folder + table[0] + ".csv' CSV HEADER;"])
     sys.exit("Complete")

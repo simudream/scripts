@@ -69,7 +69,7 @@ def format_data(format, resource_filepath, out_filepath)
    case format
    when "csv", "CSV"
      if out_file != resource_file
-       `cp -A #{resource_file} #{out_file}`
+       `cp -a #{resource_file} #{out_file}`
      end
    when "json", "JSON"
      generate_

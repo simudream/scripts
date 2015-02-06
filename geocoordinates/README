@@ -1,3 +1,5 @@
-Script for retrieving worldwide location data comprised of location name, latitude, longitude and country code. Data is limited to countries outside the US and has been made freely available. The intent of this project is to make this subset of the data more easily retrievable and convertable into alternate formats including JSON, CSV and SQL.
+Script for retrieving worldwide location data comprised of location name, latitude, longitude, country name and country code. The data is limited to countries outside the US and has been made freely available. The intent of this project is to make this subset of the data more easily retrievable and convertable into alternate formats including JSON, CSV and SQL.
+
+The data provided is accurate to six decimal places. For a representation of what this means please see http://en.wikipedia.org/wiki/Decimal_degrees#Accuracy
 
 Toponymic information is based on the Geographic Names Database, containing official standard names approved by the United States Board on Geographic Names and maintained by the National Geospatial-Intelligence Agency. More information is available at the Maps and Geodata link at www.nga.mil. The National Geospatial-Intelligence Agency name, initials, and seal are protected by 10 United States Code Section 425.

@@ -32,7 +32,7 @@ def retrieve_column_data(command, column_list):
 #Set the argument parser and command line arguments
 parser = argparse.ArgumentParser(description="Dump a postgresql database's tables to a set of csv files")
 parser.add_argument('-d', dest='database', action='store', help='the name of the database to dump')
-parser.add_argument('-l', dest='database_list', action='store_true', help='list the available databases')
+parser.add_argument('-l', dest='database_list', action='store_true', help='list the available databases and their associated tables')
 parser.add_argument('-f', dest='folder', action='store', default='/tmp/', help='Directory to store the table data csv files')
 
 args = parser.parse_args()
@@ -49,7 +49,7 @@ if args.database == None or len(args.database) == 0:
         for database in databases:
             print(database[0])
             for table in retrieve_column_data(["psql",database[0],"-c","\d"],[1]):
-                print("\t- " + table[0])
+                print(" - " + table[0])
         sys.exit()
     else:
         print("No valid options given (--help to list options)")

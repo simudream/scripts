@@ -145,6 +145,7 @@ def write_table_properties(dbms_type)
   case dbms_type
   when "oracle"
   when "postgres"
+    #btree indexes default
     puts "CREATE SEQUENCE countries_id_seq
       START WITH 1
       INCREMENT BY 1
@@ -165,21 +166,29 @@ def write_table_properties(dbms_type)
       CREATE INDEX locations_country_idx ON locations (country_id);\n"
   when "sqlserver"
   when "mysql"
+    #btree indexes default
+    #alter columns to store unicode
+    puts "ALTER TABLE countries CHANGE id id INTEGER AUTO_INCREMENT;\n
+      ALTER TABLE countries MODIFY name VARCHAR(255) CHARACTER SET utf8;\n
+      ALTER TABLE locations CHANGE id id INTEGER AUTO_INCREMENT;\n
+      ALTER TABLE locations MODIFY name VARCHAR(255) CHARACTER SET utf8;\n
+      ALTER TABLE locations ADD INDEX locations_name_idx (name);\n
+      ALTER TABLE locations ADD INDEX locations_country_idx (country_id);\n"
   end
 end
 
 def write_table_schemas()
   puts "CREATE TABLE countries (
-    id integer PRIMARY KEY,
-    name varchar(255) NOT NULL UNIQUE,
-    code varchar(2) NOT NULL UNIQUE
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    code VARCHAR(2) NOT NULL UNIQUE
     );\n\n
     CREATE TABLE locations (
-    id integer PRIMARY KEY,
-    name varchar(255) NOT NULL,
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
     latitude DECIMAL(8,6) NOT NULL CHECK (latitude >= -90 and latitude <= 90),
     longitude DECIMAL(9,6) NOT NULL CHECK (longitude >= -180 and longitude <= 180),
-    country_id integer references countries(id)
+    country_id INTEGER REFERENCES countries(id)
     );
     \n\n"
 end

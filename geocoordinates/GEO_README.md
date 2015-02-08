@@ -20,7 +20,7 @@ ruby geocoordinates.rb -f json > output.json
 ====Produce CSV output
 ruby geocoordinates.rb -f csv > output.csv
 
-====Produce CSV output and insert data to a PostGRES database
+====Produce SQL output and insert data to a PostGRES database
 
 =====Create a database
 sudo su postgres
@@ -29,11 +29,22 @@ create database test;
 \q
 exit
 
-=====Produce data and run 
+=====Produce data and insert 
 ruby geocoordinates.rb -f sql -t postgres > output.sql
 sudo chown postgres:postgres output.sql
 sudo su postgres
 psql -d test -f output.sql
+
+====Produce SQL output and insert data to a MySQL database
+(You may need to adjust or add the my.cnf variables innodb_buffer_pool_size and max_allowed_packet if you get the message 'MySQL server has gone away')
+=====Create a database
+mysql
+create database test;
+exit
+
+=====Produce data and insert
+ruby geocoordinates.rb -f sql -t mysql > output.sql
+mysql test < output.sql 
 
 ====List country code differences between what is stored locally and what is stored on the website
 ruby geocoordinates.rb -l diff

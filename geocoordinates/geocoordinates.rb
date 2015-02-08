@@ -184,6 +184,7 @@ def write_table_schemas()
     \n\n"
 end
 
+#TODO: handle long country and location names
 def write_table_data(resource_directories, site, headers, country_code_mappings)
   country_id = 1
 
@@ -274,9 +275,9 @@ if options.has_key?(:list)
 
   case options[:list]
   when "local"
-    puts retrieve_local_geocoordinate_resources(directory).sort.join(" ")
+    puts retrieve_local_geocoordinate_resources(resource_directory).sort.join(" ")
   when "diff"
-    puts (retrieve_remote_geocoordinate_resources(site) - retrieve_local_geocoordinate_resources(directory)).sort.join(" ")
+    puts (retrieve_remote_geocoordinate_resources(site) - retrieve_local_geocoordinate_resources(resource_directory)).sort.join(" ")
   when "remote"
     puts retrieve_remote_geocoordinate_resources(site).sort.join(" ")
   else

@@ -293,8 +293,6 @@ if options.has_key?(:list)
     puts "Option not available"
   end
 
-  abort()
-
 else
   if options.has_key?(:directory)
     resource_directory = options[:directory]
@@ -315,7 +313,7 @@ else
         dbms_type = options[:dbms_type].downcase
         if available_dbms.include?(options[:dbms_type])
           if not options[:format] == "sql"
-            abort("Can only specify a DBMS type with SQL format(-t)")
+            abort("Can only specify a DBMS type with SQL format(-f)")
           end
         else
           abort("DBMS unavailable")
